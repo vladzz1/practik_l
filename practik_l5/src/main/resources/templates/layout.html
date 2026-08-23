@@ -40,6 +40,14 @@
             <!-- Дії користувача (десктоп) -->
             <div class="hidden md:flex items-center gap-3">
                 <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
+                    <!-- Круглий контейнер для фото (Аватар) -->
+                    <div class="h-8 w-8 rounded-full overflow-hidden border border-gray-200 shadow-xs flex-shrink-0">
+                        <img
+                                th:src="@{/uploads/{img}(img=${#authentication.principal.image})}"
+                                alt="Avatar"
+                                class="h-full w-full object-cover"
+                        />
+                    </div>
                     <span class="text-gray-600 text-sm" sec:authentication="name">Користувач</span>
                     <form th:action="@{/logout}" method="post">
                         <button type="submit" class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
@@ -75,6 +83,12 @@
                 <a th:href="@{/about}" class="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 font-medium">Про нас</a>
 
                 <div class="border-t border-gray-200 mt-2 pt-2" sec:authorize="isAuthenticated()">
+                    <div class="border-t border-gray-200 mt-2 pt-2 flex items-center gap-2 px-3" sec:authorize="isAuthenticated()">
+                        <div class="h-8 w-8 rounded-full overflow-hidden border border-gray-200 shadow-xs flex-shrink-0">
+                            <img th:src="@{/uploads/{img}(img=${#authentication.principal.image})}" alt="Avatar" class="h-full w-full object-cover"/>
+                        </div>
+                        <span class="text-sm text-gray-500" sec:authentication="name">Користувач</span>
+                    </div>
                     <span class="block px-3 py-1 text-sm text-gray-500" sec:authentication="name">Користувач</span>
                     <form th:action="@{/logout}" method="post">
                         <button type="submit" class="w-full text-left px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 font-medium">

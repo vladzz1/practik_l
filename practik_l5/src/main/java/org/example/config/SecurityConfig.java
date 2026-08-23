@@ -18,7 +18,10 @@ public class SecurityConfig {
                                 "/",
                                 "/forgot-password",
                                 "/reset-password",
-                                "/songs"
+                                "/songs",
+                                "/uploads/**",
+                                "/css/**",
+                                "/js/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

@@ -1,5 +1,7 @@
 package org.example.controllers;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -25,7 +27,14 @@ public class AccountController {
     }
 
     @PostMapping("/register")
-    public String register(RegisterDto dto, Model model, HttpServletRequest request) {
+    public String register(@Valid RegisterDto dto, BindingResult bindingResult, Model model, HttpServletRequest request) {
+        if (dto.getPassword() != null && !dto.getPassword().equals(dto.getConfirmPassword())) {
+            bindingResult.rejectValue("confirmPassword", "error.registerDto", "Паролі не збігаються");
+        }
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("registerDto", dto);
+            return "account/register";
+        }
         try {
             accountService.register(dto, request);
             return "redirect:/";

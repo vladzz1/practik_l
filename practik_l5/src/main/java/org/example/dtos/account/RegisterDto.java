@@ -1,6 +1,7 @@
 package org.example.dtos.account;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,4 +16,6 @@ public class RegisterDto {
     private String password;
     @NotBlank
     private String confirmPassword;
+    @NotNull
+    private MultipartFile imageFile;
 }
