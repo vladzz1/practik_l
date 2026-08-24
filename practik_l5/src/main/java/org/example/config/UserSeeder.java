@@ -1,6 +1,9 @@
 package org.example.config;
+import lombok.AllArgsConstructor;
 import net.datafaker.Faker;
+import org.example.entities.RoleEntity;
 import org.example.entities.UserEntity;
+import org.example.repositories.IRoleRepository;
 import org.example.repositories.IUserRepository;
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
@@ -10,18 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@AllArgsConstructor
 public class UserSeeder implements CommandLineRunner {
     private final IUserRepository userRepository;
+    private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final Faker faker = new Faker();
 
-    public UserSeeder(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    //public UserSeeder(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
+    //    this.userRepository = userRepository;
+    //    this.passwordEncoder = passwordEncoder;
+    //}
 
     @Override
     public void run(String @NonNull ... args) throws Exception {
+        seedRoles();
         if (userRepository.count() == 0) {
             List<UserEntity> users = new ArrayList<>();
 
@@ -56,6 +62,23 @@ public class UserSeeder implements CommandLineRunner {
         }
         else {
             System.out.println("ℹ️ База даних вже містить користувачів. Сідер пропущено.");
+        }
+    }
+
+    private void seedRoles() {
+        List<String> roles = RolesConstants.Roles;
+
+        for (String roleName : roles) {
+            boolean exists = roleRepository.findByName(roleName).isPresent();
+            if (!exists) {
+                RoleEntity role = new RoleEntity();
+                role.setName(roleName);
+                roleRepository.save(role);
+                System.out.println("Додано роль: " + roleName);
+            }
+            else {
+                System.out.println("Роль вже існує: " + roleName);
+            }
         }
     }
 }

@@ -2,8 +2,11 @@ package org.example.services;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
+import org.example.config.RolesConstants;
 import org.example.dtos.account.RegisterDto;
+import org.example.entities.RoleEntity;
 import org.example.entities.UserEntity;
+import org.example.repositories.IRoleRepository;
 import org.example.repositories.IUserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +25,7 @@ import java.util.UUID;
 @RequiredArgsConstructor //Для DI - Dependency Injection щоб усе працювало як сало
 public class AccountService {
     private final IUserRepository userRepository;
+    private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final String uploadDir = "uploads/";
 
@@ -46,6 +50,10 @@ public class AccountService {
         catch (IOException e) {
             throw new RuntimeException("Failed to save profile image", e);
         }
+
+        RoleEntity roleUser = roleRepository.findByName(RolesConstants.UserRole).orElseThrow(()->new RuntimeException("User role not found"));
+        user.getRoles().add(roleUser);
+
         UserEntity saveUser = userRepository.save(user);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(saveUser, null, saveUser.getAuthorities());
